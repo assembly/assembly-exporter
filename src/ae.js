@@ -1,4 +1,4 @@
-﻿///////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
 //    AssemblyExporter.jsx
 //    (c) 2012 Sophia Chou, Assembly Development Corp.
 ///////////////////////////////////////////////////////
@@ -502,7 +502,7 @@ AE.artboardPureName = function(artboard_name) {
 	var words = artboard_name.split(' ');
 	var k = [];
 	for(var i = 0; i < words.length; i++){
-		if (words[i].length == 0) { return }
+		if (words[i].length == 0) { break }
 		var fl = words[i][0];
 		if ( fl == "$") {
 			k.push(words[i].substr(1,words[i].length));
@@ -522,7 +522,7 @@ AE.nameHashTags = function(name) {
 	var words = name.split(' ');
 	var k = [];
 	for(var i = 0; i < words.length; i++){
-		if (words[i].length == 0) { return }
+		if (words[i].length == 0) { break }
 		var fl = words[i][0];
 		if (fl == "#") {
 			k.push(words[i].substr(1,words[i].length));
@@ -542,7 +542,7 @@ AE.nameDashTags = function(name) {
 	var words = name.split(' ');
 	var k = [];
 	for(var i = 0; i < words.length; i++){
-		if (words[i].length == 0) { return }
+		if (words[i].length == 0) { break }
 		var fl = words[i][0];
 		if (fl == "-") {
 			k.push(words[i].substr(1,words[i].length));
@@ -551,7 +551,7 @@ AE.nameDashTags = function(name) {
 	return k;
 }
 
-AE.runExport = function() {  
+AE.runExport = function() {
 	var format_options = this.getFormatOptions();
 	var format_info = this.getFormatInfo();
 	var num_artboards = doc.artboards.length;

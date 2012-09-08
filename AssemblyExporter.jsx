@@ -1,18 +1,19 @@
 // # AssemblyExporter for Adobe Illustrator
 // 
-// AssemblyExporter helps you organize and mass export assets directly from Adobe Illustrator mockups.
+// AssemblyExporter helps you organize and mass export assets directly from Adobe Illustrator mockups by letting you coordinate artboards, layers, and groups using tags.
 // 
-// ## Acknowledgments
-// 
-// AssemblyExport is a tagged reimagination of the New York Times MultiExport (Copyright 2011) by Matthew Ericson.
-// 
-// It has been rewritten from scratch to handle Assembly's need to better export assets directly from mockups.
+// It was originally inspired by the New York Times MultiExport script (Copyright 2011) by Matthew Ericson.
 // 
 // We hope it saves you as much time as it saves us.
 // 
-// ## Installation
+// ## Install
 // 
-// ## Compiliation
+// On OSX, run this command in your terminal:
+// 
+//     curl https://raw.github.com/assembly/assembly-exporter/master/AssemblyExporter.jsx \
+//       > /Applications/Adobe\ Illustrator\ CS*/Presets.localized/en_US/Scripts/AssemblyExporter.jsx
+// 
+// On Windows, download the AssemblyExporter.jsx script and install it in your Adobe Illustrator scripts directory.
 // 
 // ## Usage
 // 
@@ -22,16 +23,25 @@
 // 
 // Exports all artboards, plain and simple.
 // 
+// Exported filenames won't include the $ or any #hash or -dash tags.
+// 
 // #### Moneyboards
 // 
 // Exports all artboards prefaced with $ (for example $HomePage).
 // 
-// Moneyboard are an easy way for you to designate and mass export full mockups while ignoring individual assets.
+// Moneyboard are an easy way for you to designate and mass export full mockups while ignoring asset artboards.
 // 
 // They're called moneyboard because they're the ones that wow the clients and get you paid.
 // 
 // #### Tagged Artboards
 // 
+// Exports artboards while hiding all layers and groups without a matching tag.
+// 
+// \#hash tags: An artboard "logo #fg" hides all layers and groups, except those tagged with #fg. Exports to "logo.png".
+// 
+// -dash tags: An artboard "logo #fg -active -inactive" does the same, but individually exports "logo-active.png" using -active content and "logo-inactive.png" using -inactive content.
+// 
+// Moneyboards are ignored.
 //     Underscore.js 1.3.3
 //     (c) 2009-2012 Jeremy Ashkenas, DocumentCloud Inc.
 //     Underscore may be freely distributed under the MIT license.
@@ -1190,7 +1200,8 @@
 
 }).call(this);
 
-﻿///////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////
 //    AssemblyExporter.jsx
 //    (c) 2012 Sophia Chou, Assembly Development Corp.
 ///////////////////////////////////////////////////////
@@ -1273,9 +1284,9 @@ They're called moneyboard because they're the ones that wow the clients and get 
 		label: "Tagged Artboards",
 		description: """Exports artboards while hiding all layers and groups without a matching tag. 
 
-#hashtags: An artboard "logo #fg" hides all layers and groups, except those tagged with #fg. Exports to "logo.png".
+#hash tags: An artboard "logo #fg" hides all layers and groups, except those tagged with #fg. Exports to "logo.png".
 
--dashtags: An artboard "logo #fg -active -inactive" does the same, but individually exports "logo-active.png" using -active content and "logo-inactive.png" using -inactive content.
+-dash tags: An artboard "logo #fg -active -inactive" does the same, but individually exports "logo-active.png" using -active content and "logo-inactive.png" using -inactive content.
 
 Moneyboards are ignored."""
 	}
@@ -1694,7 +1705,7 @@ AE.artboardPureName = function(artboard_name) {
 	var words = artboard_name.split(' ');
 	var k = [];
 	for(var i = 0; i < words.length; i++){
-		if (words[i].length == 0) { return }
+		if (words[i].length == 0) { break }
 		var fl = words[i][0];
 		if ( fl == "$") {
 			k.push(words[i].substr(1,words[i].length));
@@ -1714,7 +1725,7 @@ AE.nameHashTags = function(name) {
 	var words = name.split(' ');
 	var k = [];
 	for(var i = 0; i < words.length; i++){
-		if (words[i].length == 0) { return }
+		if (words[i].length == 0) { break }
 		var fl = words[i][0];
 		if (fl == "#") {
 			k.push(words[i].substr(1,words[i].length));
@@ -1734,7 +1745,7 @@ AE.nameDashTags = function(name) {
 	var words = name.split(' ');
 	var k = [];
 	for(var i = 0; i < words.length; i++){
-		if (words[i].length == 0) { return }
+		if (words[i].length == 0) { break }
 		var fl = words[i][0];
 		if (fl == "-") {
 			k.push(words[i].substr(1,words[i].length));
@@ -1743,7 +1754,7 @@ AE.nameDashTags = function(name) {
 	return k;
 }
 
-AE.runExport = function() {  
+AE.runExport = function() {
 	var format_options = this.getFormatOptions();
 	var format_info = this.getFormatInfo();
 	var num_artboards = doc.artboards.length;
